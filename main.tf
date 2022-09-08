@@ -129,3 +129,32 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
     storage_account_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
   }
 }
+
+
+
+
+
+resource "azurerm_api_management" "confer" {
+  name                = "confer-apim"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  publisher_name      = "My Company"
+  publisher_email     = "company@terraform.io"
+
+  sku_name = "Developer_1"
+}
+
+resource "azurerm_api_management_api" "confer" {
+  name                = "confer-api"
+  resource_group_name = azurerm_resource_group.rg.name
+  api_management_name = azurerm_api_management.confer.name
+  revision            = "1"
+  display_name        = "confer API"
+  path                = "confer"
+  protocols           = ["https"]
+
+  import {
+    content_format = "swagger-link-json"
+    content_value  = "http://conferenceapi.azurewebsites.net/?format=json"
+  }
+}
